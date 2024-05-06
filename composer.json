@@ -11,6 +11,9 @@
         "laravel/jetstream": "^5.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "mathewparet/inertia-config-share": "^1.0",
+        "mathewparet/laravel-git-version": "^1.0",
+        "mathewparet/laravel-policy-abilities-export": "^2.0",
         "tightenco/ziggy": "^2.0"
     },
     "require-dev": {
