@@ -208,17 +208,6 @@
                             <InputError :message="form.errors.title" class="mt-2" />
                         </div>
                         <div class="col-span-6 sm:col-span-4">
-                            <InputLabel for="title" value="Description" />
-                            <TextAreaInput
-                                id="description"
-                                v-model="form.description"
-                                type="text"
-                                class="mt-1 block w-full"
-                                rows="5"
-                            />
-                            <InputError :message="form.errors.description" class="mt-2" />
-                        </div>
-                        <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="duration" value="Duration" />
                             <MaskInput
                                 mask="#:##"
@@ -229,6 +218,17 @@
                                 placeholder="m:ss"
                             />
                             <InputError :message="form.errors.duration" class="mt-2" />
+                        </div>
+                        <div class="col-span-6 sm:col-span-4">
+                            <InputLabel for="title" value="Description" />
+                            <TextAreaInput
+                                id="description"
+                                v-model="form.description"
+                                type="text"
+                                class="mt-1 block w-full"
+                                rows="5"
+                            />
+                            <InputError :message="form.errors.description" class="mt-2" />
                         </div>
                     </template>
                     <template #actions>

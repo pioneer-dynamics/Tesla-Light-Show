@@ -15,6 +15,8 @@ class LightShow extends Model
     use HasHashId;
     use ExportsPermissions;
 
+    protected $perPage = 16;
+
     protected $fillable = [
         'title',
         'description',
