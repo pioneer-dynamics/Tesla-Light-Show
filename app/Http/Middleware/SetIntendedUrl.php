@@ -18,7 +18,7 @@ class SetIntendedUrl
     {
         if($request->has('returnTo'))
         {
-            Session::flash('url.intended', $request->get('returnTo'));
+            Session::put('url.intended', $request->get('returnTo'));
         }
 
         return $next($request);

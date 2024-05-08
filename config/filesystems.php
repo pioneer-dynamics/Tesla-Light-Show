@@ -36,6 +36,12 @@ return [
             'throw' => false,
         ],
 
+        'temp' => [
+            'driver' => 'scoped',
+            'disk' => 's3',
+            'prefix' => 'temp',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

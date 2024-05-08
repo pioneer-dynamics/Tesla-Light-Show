@@ -51,6 +51,12 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
+                                <NavLink :href="route('light-shows.index')" :active="!route().current().indexOf('light-shows.') && !route().current('light-shows.my')">
+                                    Light Shows
+                                </NavLink>
+                                <NavLink :href="route('light-shows.my')" :active="route().current('light-shows.my')">
+                                    My Light Shows
+                                </NavLink>
                             </div>
                         </div>
 
@@ -193,6 +199,12 @@ const logout = () => {
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('light-shows.index')" :active="!route().current().indexOf('light-shows.') && !route().current('light-shows.my')">
+                            Light Shows
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('light-shows.my')" :active="route().current('light-shows.my')">
+                            My Light Shows
                         </ResponsiveNavLink>
                     </div>
 

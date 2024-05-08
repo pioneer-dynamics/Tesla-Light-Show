@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => 'lightshow',
+    'default' => 'LightShow',
 
     /*
     |--------------------------------------------------------------------------
@@ -28,15 +28,15 @@ return [
 
     'connections' => [
 
-        'lightshow' => [
+        'LightShow' => [
             'salt' => env('HASHID_SALT_LIGHTSHOW'),
             'length' => 10,
             // 'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
         ],
 
-        'alternative' => [
-            'salt' => 'your-salt-string',
-            'length' => 'your-length-integer',
+        'User' => [
+            'salt' => env('HASHID_SALT_USER'),
+            'length' => 10,
             // 'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
         ],
 

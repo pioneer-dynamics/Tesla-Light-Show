@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasHashId;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,6 +21,7 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasPasskeys;
+    use HasHashId;
 
     /**
      * The attributes that are mass assignable.
@@ -64,5 +66,15 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function lightShows()
+    {
+        return $this->hasMany(LightShow::class);
+    }
+
+    public function reactions()
+    {
+        $this->hasManyThrough(LightShow::class, Reaction::class);
     }
 }
