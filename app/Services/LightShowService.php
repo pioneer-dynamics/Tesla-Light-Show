@@ -1,12 +1,12 @@
 <?php
 namespace App\Services;
 
-// use ZipStream\ZipStream;
 use App\Models\LightShow;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Contracts\ZipStream;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use App\Contracts\LightShowService as LightShowServiceContract;
@@ -14,6 +14,19 @@ use App\Contracts\LightShowService as LightShowServiceContract;
 class LightShowService implements LightShowServiceContract
 {
     public function __construct(private Request $request, private ZipStream $zip) {}
+
+    public function prune($hours)
+    {
+        foreach (Storage::disk('temp')->files() as $file) 
+        {
+            $fileLastModified = Carbon::createFromTimestamp(Storage::disk('temp')->lastModified($file));
+ 
+            if ($fileLastModified->addHours($hours)->isPast())
+            {
+                Storage::disk('temp')->delete($file);
+            }
+        }
+    }
 
     private function getNaturalFilename($filename, $title)
     {

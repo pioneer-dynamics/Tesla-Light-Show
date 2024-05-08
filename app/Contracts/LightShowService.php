@@ -7,6 +7,15 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 interface LightShowService
 {
     /**
+     * Prune old light shows
+     * 
+     * @param  int  $hours
+     * 
+     * @return void
+     */
+    public function prune($hours);
+    
+    /**
      * Download sequence file and mark it is downloaded
      * 
      * @param  LightShow  $light_show

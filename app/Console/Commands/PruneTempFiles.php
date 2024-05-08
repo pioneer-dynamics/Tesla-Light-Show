@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Contracts\LightShowService;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -25,15 +26,8 @@ class PruneTempFiles extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(LightShowService $lightShowService)
     {
-        foreach (Storage::disk('temp')->files() as $file) {
-            $fileLastModified = Carbon::createFromTimestamp(Storage::disk('temp')->lastModified($file));
- 
-            if ($fileLastModified->addHours($this->option('hours'))->isPast())
-            {
-                Storage::disk('temp')->delete($file);
-            }
-        }
+        $lightShowService->prune($this->option('hours'));
     }
 }
