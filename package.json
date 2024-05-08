@@ -20,7 +20,12 @@
     },
     "dependencies": {
         "@simplewebauthn/browser": "^9.0.1",
+        "filepond": "^4.31.1",
+        "filepond-plugin-file-validate-size": "^2.2.8",
+        "filepond-plugin-file-validate-type": "^1.2.9",
         "luxon": "^3.4.4",
+        "vue-3-mask": "^0.0.1-alpha",
+        "vue-filepond": "^7.0.4",
         "vue3-lottie": "^3.3.0"
     }
 }
