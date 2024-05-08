@@ -25,9 +25,9 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('light-shows/my', [LightShowController::class, 'my'])->name('light-shows.my');
-    Route::get('light-shows/{light_show}/audio', [LightShowController::class, 'downloadAudio'])->name('light-shows.audio');
-    Route::get('light-shows/{light_show}/seq', [LightShowController::class, 'downloadSequence'])->name('light-shows.seq');
-    Route::get('light-shows/{light_show}/zip', [LightShowController::class, 'downloadZip'])->name('light-shows.zip');
+    Route::get('light-shows/{light_show}/{filename}.fseq', [LightShowController::class, 'downloadSequence'])->name('light-shows.seq');
+    Route::get('light-shows/{light_show}/{filename}.zip', [LightShowController::class, 'downloadZip'])->name('light-shows.zip');
+    Route::get('light-shows/{light_show}/{filename}.{ext}', [LightShowController::class, 'downloadAudio'])->where('ext', '.*')->name('light-shows.audio');
     Route::resource('light-shows', LightShowController::class);
 
     Route::post('bg-uploads/process', [BackgroundUploadsController::class, 'process'])->name('bg-uploads.process');

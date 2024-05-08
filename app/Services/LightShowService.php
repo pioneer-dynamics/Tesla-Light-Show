@@ -30,7 +30,7 @@ class LightShowService implements LightShowServiceContract
 
     private function getNaturalFilename($filename, $title)
     {
-        return Str::headline($title) . '.' . pathinfo($filename, PATHINFO_EXTENSION);
+        return Str::slug($title) . '.' . pathinfo($filename, PATHINFO_EXTENSION);
     }
 
     public function downloadSequence(LightShow $light_show): StreamedResponse
@@ -50,7 +50,7 @@ class LightShowService implements LightShowServiceContract
         $light_show->markDownloaded();
 
         return $this->zip
-                    ->setOutputFilename(Str::headline($light_show->title) . '.zip')
+                    ->setOutputFilename(Str::slug($light_show->title) . '.zip')
                     ->add(Storage::readStream($light_show->audio_file), $this->getNaturalFilename($light_show->audio_file, $light_show->title))
                     ->add(Storage::readStream($light_show->sequence_file), $this->getNaturalFilename($light_show->sequence_file, $light_show->title))
                     ->stream();
