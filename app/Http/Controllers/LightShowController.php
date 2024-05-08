@@ -29,6 +29,11 @@ class LightShowController extends Controller
         return $this->lightShowService->downloadSequence($light_show);
     }
 
+    public function downloadZip(LightShow $light_show)
+    {
+        return $this->lightShowService->downloadZip($light_show);
+    }
+
     /**
      * Display a listing of the resource.
      */

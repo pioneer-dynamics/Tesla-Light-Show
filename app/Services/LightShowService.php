@@ -1,9 +1,11 @@
 <?php
 namespace App\Services;
 
+// use ZipStream\ZipStream;
 use App\Models\LightShow;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Contracts\ZipStream;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -11,23 +13,34 @@ use App\Contracts\LightShowService as LightShowServiceContract;
 
 class LightShowService implements LightShowServiceContract
 {
-    public function __construct(private Request $request) {}
+    public function __construct(private Request $request, private ZipStream $zip) {}
+
+    private function getNaturalFilename($filename, $title)
+    {
+        return Str::headline($title) . '.' . pathinfo($filename, PATHINFO_EXTENSION);
+    }
 
     public function downloadSequence(LightShow $light_show): StreamedResponse
     {
         $light_show->markDownloaded();
 
-        return Storage::download($light_show->sequence_file, Str::headline($light_show->title) . '.' . pathinfo($light_show->sequence_file, PATHINFO_EXTENSION));
+        return Storage::download($light_show->sequence_file, $this->getNaturalFilename($light_show->sequence_file, $light_show->title));
     }
 
     public function downloadAudio(LightShow $light_show): StreamedResponse
     {
-        return Storage::download($light_show->audio_file, Str::headline($light_show->title) . '.' . pathinfo($light_show->audio_file, PATHINFO_EXTENSION));
+        return Storage::download($light_show->audio_file, $this->getNaturalFilename($light_show->audio_file, $light_show->title));
     }
 
     public function downloadZip(LightShow $light_show): StreamedResponse
     {
-        return new StreamedResponse();
+        $light_show->markDownloaded();
+
+        return $this->zip
+                    ->setOutputFilename(Str::headline($light_show->title) . '.zip')
+                    ->add(Storage::readStream($light_show->audio_file), $this->getNaturalFilename($light_show->audio_file, $light_show->title))
+                    ->add(Storage::readStream($light_show->sequence_file), $this->getNaturalFilename($light_show->sequence_file, $light_show->title))
+                    ->stream();
     }
 
     public function create(array $data): LightShow
