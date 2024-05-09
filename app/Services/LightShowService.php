@@ -20,8 +20,8 @@ class LightShowService implements LightShowServiceContract
         foreach (Storage::disk('temp')->files() as $file) 
         {
             $fileLastModified = Carbon::createFromTimestamp(Storage::disk('temp')->lastModified($file));
- 
-            if ($fileLastModified->addHours($hours)->isPast())
+
+            if ($fileLastModified->addHours((int)$hours)->isPast())
             {
                 Storage::disk('temp')->delete($file);
             }

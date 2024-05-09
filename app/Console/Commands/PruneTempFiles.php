@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Contracts\LightShowService;
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Console\Command;
+use App\Contracts\LightShowService;
 use Illuminate\Support\Facades\Storage;
 
 class PruneTempFiles extends Command
@@ -29,5 +30,10 @@ class PruneTempFiles extends Command
     public function handle(LightShowService $lightShowService)
     {
         $lightShowService->prune($this->option('hours'));
+
+        $this->info(__('All temporary files older than :hour :hours pruned.', [
+            'hour' => $this->option('hours'),
+            'hours' => Str::plural('hour', (int)$this->option('hours'))
+        ]));
     }
 }
