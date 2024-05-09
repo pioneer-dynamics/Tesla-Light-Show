@@ -12,7 +12,6 @@
     import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
     import 'filepond/dist/filepond.min.css';
     import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
-    import { MaskInput } from 'vue-3-mask';
 
     const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginFileValidateSize);
 
@@ -38,14 +37,28 @@
         form.audio_file = null;
     }
 
-    const validateFseqFile = (source, type) => {
+    const validateFseqFile = (file, type) => {
+        const reader = new FileReader();
+
+        reader.readAsArrayBuffer(file);
+
         return new Promise((resolve, reject) => {
-            if (source.name.endsWith('fseq')) {
-                resolve('custom/fseq');
-            } else {
-                reject(type);
+            reader.onload = () => {
+                const buffer = reader.result;
+
+                const dataView = new DataView(buffer);
+
+                const identifier = String.fromCharCode(dataView.getUint8(0), dataView.getUint8(1), dataView.getUint8(2), dataView.getUint8(3));
+
+                if(['FSEQ','PSEQ'].indexOf(identifier) == 1)
+                    resolve('custom/fseq');
+                else
+                    reject(type)
             }
 
+            reader.onerror = () => {
+                reject(type);
+            };
         })
     }
 
@@ -60,6 +73,10 @@
         if(!error)
         {
             form.title = form.title ? form.title : file.filenameWithoutExtension
+
+            getFseqDuration(file.file).then(duration => {
+                form.duration = duration;
+            })
         }
     }
     
@@ -107,8 +124,31 @@
     })
 
     const addModel = () => {
-        form.post(route('light-shows.store'), {
-            preserveScroll: true,
+        form.post(route('light-shows.store'));
+    }
+
+    const getFseqDuration = (file) => {
+        const reader = new FileReader();
+        reader.readAsArrayBuffer(file);
+
+        return new Promise((resolve, reject) => {
+            reader.onload = () => {
+                const buffer = reader.result;
+
+                const dataView = new DataView(buffer);
+
+                const frameCount = dataView.getUint32(14, true);
+
+                const stepTime = dataView.getUint8(18);
+
+                const durationS = (frameCount * stepTime) / 1000;
+
+                resolve(new Date(durationS * 1000).toISOString().substr(15, 4));
+            };
+
+            reader.onerror = () => {
+                reject(new Error('Failed to read file'));
+            };
         });
     }
 </script>
@@ -149,6 +189,18 @@
                             <InputError :message="form.errors.sequence_file" class="mt-2" />
                         </div>
                         <div class="col-span-6 sm:col-span-4">
+                            <InputLabel for="duration" value="Duration" />
+                            <TextInput
+                                mask="#:##"
+                                id="duration"
+                                v-model="form.duration"
+                                type="text"
+                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-smst"
+                                placeholder="m:ss"
+                            />
+                            <InputError :message="form.errors.duration" class="mt-2" />
+                        </div>
+                        <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="audio_file" value="Audio File (*.wav or *mp3)" />
                             <file-pond
                                 name="audio_file"
@@ -158,7 +210,7 @@
                                 v-bind:files="uploadForm.audio_file"
                                 class="mt-1 block w-full" 
                                 :credits="false"
-                                maxFileSize="50MB"
+                                maxFileSize="100MB"
                                 :server="filepondServerEndpoint"
                                 @processfile="handleAudioFileUploaded"
                                 @removefile="handleAudioFileReverted"
@@ -181,7 +233,7 @@
                             <InputLabel for="video_preview" value="OR Video Preview (MP4 File)" />
                             <file-pond
                                 name="video_preview"
-                                ref="videFileInput"
+                                ref="videoFileInput"
                                 label-idle="Click to select or drop file here..."
                                 accepted-file-types="video/mp4"
                                 v-bind:files="uploadForm.video_preview"
@@ -206,18 +258,6 @@
                                 autofocus
                             />
                             <InputError :message="form.errors.title" class="mt-2" />
-                        </div>
-                        <div class="col-span-6 sm:col-span-4">
-                            <InputLabel for="duration" value="Duration" />
-                            <MaskInput
-                                mask="#:##"
-                                id="duration"
-                                v-model="form.duration"
-                                type="text"
-                                class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-smst"
-                                placeholder="m:ss"
-                            />
-                            <InputError :message="form.errors.duration" class="mt-2" />
                         </div>
                         <div class="col-span-6 sm:col-span-4">
                             <InputLabel for="title" value="Description" />

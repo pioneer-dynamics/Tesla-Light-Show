@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\BackgroundUploadsController;
 use Inertia\Inertia;
+use App\Models\LightShow;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\LightShowController;
+use App\Http\Controllers\BackgroundUploadsController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -21,7 +22,8 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+        $total_light_shows = LightShow::count();
+        return Inertia::render('Dashboard', compact('total_light_shows'));
     })->name('dashboard');
 
     Route::get('light-shows/my', [LightShowController::class, 'my'])->name('light-shows.my');
